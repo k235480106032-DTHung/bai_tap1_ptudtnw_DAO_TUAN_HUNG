@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Bài tập 2 - Gọi API Node-RED</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; }
+        table { border-collapse: collapse; width: 50%; margin-top: 15px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #4CAF50; color: white; }
+        button { padding: 10px 15px; font-size: 16px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h2>Danh sách Sinh viên thu tiền (Gọi từ API Node-RED)</h2>
+    <button onclick="layDanhSach()">Tải danh sách API</button>
+    <p id="thongbao"></p>
+
+    <table id="bang-dssv" style="display:none;">
+        <thead>
+            <tr>
+                <th>Họ và Tên</th>
+                <th>Số tiền (VNĐ)</th>
+            </tr>
+        </thead>
+        <tbody id="noidung-dssv"></tbody>
+    </table>
+
+    <script>
+        function layDanhSach() {
+            fetch('/api/tacke')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('thongbao').innerText = "Trạng thái: " + data.msg;
+                    let html = '';
+                    data.dssv.forEach(sv => {
+                        html += `<tr><td>${sv.name}</td><td>${sv.money}</td></tr>`;
+                    });
+                    document.getElementById('noidung-dssv').innerHTML = html;
+                    document.getElementById('bang-dssv').style.display = 'table';
+                })
+                .catch(error => {
+                    console.error('Lỗi gọi API:', error);
+                    document.getElementById('thongbao').innerText = 'Lỗi kết nối tới API!';
+                });
+        }
+    </script>
+</body>
+</html>
